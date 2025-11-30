@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Phishing Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ current_user.email }}!</p>
+    </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ stats.total_detections }}</h4>
+                        <small>Total Scans</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-search fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ stats.safe_count }}</h4>
+                        <small>Safe Items</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ stats.suspicious_count }}</h4>
+                        <small>Suspicious Items</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-danger text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4>{{ stats.phishing_count }}</h4>
+                        <small>Phishing Detected</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-exclamation-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Analysis Tools -->
+<div class="row mb-4">
+    <!-- Text Analysis -->
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-file-text"></i> Text Analysis</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('analyze_text_route') }}">
+                    <div class="mb-3">
+                        <label for="text_input" class="form-label">Enter text to analyze:</label>
+                        <textarea class="form-control" id="text_input" name="text_input" 
+                                rows="4" placeholder="Paste email content, message, or any text..." required></textarea>
+                        <small class="text-muted">Maximum 5000 characters</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-search"></i> Analyze Text
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Analysis -->
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-file"></i> File Analysis</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('analyze_file_route') }}" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="file_input" class="form-label">Upload file to analyze:</label>
+                        <input class="form-control" type="file" id="file_input" name="file_input" 
+                               accept=".txt,.csv,.json,.png,.jpg,.jpeg,.gif,.mp3,.wav,.mp4,.avi,.mov" required>
+                        <small class="text-muted">
+                            Supported: Text (.txt, .csv, .json), Images (.png, .jpg, .gif), 
+                            Audio (.mp3, .wav), Video (.mp4, .avi, .mov)
+                        </small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-upload"></i> Analyze File
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Detections -->
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <h5><i class="fas fa-history"></i> Recent Detections</h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="refreshDetections()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="card-body">
+                {% if detections %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Content/File</th>
+                                <th>Result</th>
+                                <th>Safety %</th>
+                                <th>Date</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detection in detections %}
+                            <tr>
+                                <td>
+                                    <span class="badge bg-secondary">
+                                        {% if detection.detection_type == 'text' %}
+                                            <i class="fas fa-file-text"></i>
+                                        {% elif detection.detection_type == 'image' %}
+                                            <i class="fas fa-image"></i>
+                                        {% elif detection.detection_type == 'audio' %}
+                                            <i class="fas fa-volume-up"></i>
+                                        {% elif detection.detection_type == 'video' %}
+                                            <i class="fas fa-video"></i>
+                                        {% endif %}
+                                        {{ detection.detection_type.title() }}
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if detection.filename %}
+                                        {{ detection.filename[:30] }}{% if detection.filename|length > 30 %}...{% endif %}
+                                    {% else %}
+                                        {{ detection.input_data[:50] }}{% if detection.input_data|length > 50 %}...{% endif %}
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if detection.result_label == 'Safe' %}bg-success
+                                        {% elif detection.result_label == 'Suspicious' %}bg-warning
+                                        {% elif detection.result_label == 'Phishing' %}bg-danger
+                                        {% else %}bg-secondary{% endif %}">
+                                        {{ detection.result_label }}
+                                    </span>
+                                </td>
+                                <td>{{ "%.1f"|format(detection.safety_percentage) }}%</td>
+                                <td>{{ detection.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-info" 
+                                            onclick="showDetails({{ detection.id }})">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center text-muted">
+                    <i class="fas fa-search fa-3x mb-3"></i>
+                    <p>No detections yet. Start by analyzing some text or uploading a file.</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Detection Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detection Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detailsContent">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function refreshDetections() {
+    location.reload();
+}
+
+function showDetails(detectionId) {
+    // In a real implementation, you'd fetch details via AJAX
+    document.getElementById('detailsContent').innerHTML = `
+        <p><strong>Detection ID:</strong> ${detectionId}</p>
+        <p><strong>Status:</strong> Analysis complete</p>
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Detailed analysis results would be shown here in a production environment.
+        </div>
+    `;
+    new bootstrap.Modal(document.getElementById('detailsModal')).show();
+}
+</script>
+{% endblock %}

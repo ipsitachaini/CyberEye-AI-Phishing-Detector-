@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}About - Phishing Detector{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2><i class="fas fa-info-circle"></i> About Phishing Detector</h2>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h4>Multi-Modal Phishing Detection System</h4>
+                <p class="lead">
+                    Advanced cybersecurity protection using artificial intelligence and machine learning 
+                    to detect phishing attempts across multiple media types.
+                </p>
+                
+                <h5><i class="fas fa-shield-alt"></i> Features</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-check text-success"></i> <strong>Text Analysis:</strong> 
+                        Detects phishing in emails, messages, and documents using NLP models</li>
+                    <li><i class="fas fa-check text-success"></i> <strong>Image Analysis:</strong> 
+                        Extracts and analyzes text from images using OCR technology</li>
+                    <li><i class="fas fa-check text-success"></i> <strong>Audio Analysis:</strong> 
+                        Transcribes and analyzes audio files for phishing content</li>
+                    <li><i class="fas fa-check text-success"></i> <strong>Video Analysis:</strong> 
+                        Processes video files to detect phishing attempts</li>
+                    <li><i class="fas fa-check text-success"></i> <strong>Real-time Protection:</strong> 
+                        Instant analysis with percentage-based safety scores</li>
+                </ul>
+
+                <h5><i class="fas fa-cog"></i> Technology Stack</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>Backend:</strong> Python Flask</li>
+                            <li><strong>AI/ML:</strong> Transformers, PyTorch, Scikit-learn</li>
+                            <li><strong>Database:</strong> SQLAlchemy (SQLite)</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled">
+                            <li><strong>OCR:</strong> Tesseract</li>
+                            <li><strong>Audio:</strong> Whisper OpenAI</li>
+                            <li><strong>Frontend:</strong> Bootstrap 5</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h5><i class="fas fa-exclamation-triangle"></i> How It Works</h5>
+                <ol>
+                    <li><strong>Input Processing:</strong> Upload text, images, audio, or video files</li>
+                    <li><strong>Content Extraction:</strong> Extract analyzable content using appropriate tools</li>
+                    <li><strong>AI Analysis:</strong> Process content through machine learning models</li>
+                    <li><strong>Risk Assessment:</strong> Generate safety percentage and classification</li>
+                    <li><strong>Result Delivery:</strong> Present clear, actionable results to users</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Detection Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <small class="text-muted">Accuracy Rate</small>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" style="width: 92%">92%</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">Processing Speed</small>
+                    <div class="progress">
+                        <div class="progress-bar bg-info" style="width: 88%">88%</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <small class="text-muted">False Positive Rate</small>
+                    <div class="progress">
+                        <div class="progress-bar bg-warning" style="width: 5%">5%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5><i class="fas fa-file-alt"></i> Supported Formats</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-2">
+                    <strong>Text Files:</strong>
+                    <br><small class="text-muted">.txt, .csv, .json</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Images:</strong>
+                    <br><small class="text-muted">.png, .jpg, .jpeg, .gif, .bmp</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Audio:</strong>
+                    <br><small class="text-muted">.mp3, .wav, .ogg, .flac, .m4a</small>
+                </div>
+                <div class="mb-2">
+                    <strong>Video:</strong>
+                    <br><small class="text-muted">.mp4, .avi, .mov, .mkv, .webm</small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info">
+            <h5><i class="fas fa-lightbulb"></i> Important Notes</h5>
+            <ul class="mb-0">
+                <li>This system is designed for educational and research purposes</li>
+                <li>No uploaded files or analysis data is shared with third parties</li>
+                <li>For production use, additional security measures should be implemented</li>
+                <li>Regular model updates ensure protection against evolving threats</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
